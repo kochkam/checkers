@@ -4,12 +4,14 @@ import './App.css'
 class checkerArray {
 constructor(){
 
-    this.squares = [ ,<div className="circle"></div>, ,<div className="circle"></div> , , <div className="circle"></div> , , <div className="circle"></div> ,
-    <div className="circle"></div>, ,<div className="circle"></div> , , <div className="circle"></div> , , <div className="circle"></div> , ,
-    ,<div className="circle"></div>, ,<div className="circle"></div> , , <div className="circle"></div> , , <div className="circle"></div> ,
-    , , , , , , , , , , , , , , ,  ,<div className="circleRed"></div>, ,<div className="circleRed"></div> , , <div className="circleRed"></div> , , <div className="circleRed"></div> ,
-    ,  ,<div className="circleRed"></div>, ,<div className="circleRed"></div> , , <div className="circleRed"></div> , , <div className="circleRed"></div> ,
-    <div className="circleRed"></div>, ,<div className="circleRed"></div> , , <div className="circleRed"></div> , , <div className="circleRed"></div> ,
+    this.squares = [ <div className="empty"></div>,<div className="circle"></div>,<div className="empty"></div> ,<div className="circle"></div> ,<div className="empty"></div> , <div className="circle"></div> , <div className="empty"></div>, <div className="circle"></div> ,
+    <div className="circle"></div>,<div className="empty"></div> ,<div className="circle"></div> ,<div className="empty"></div> , <div className="circle"></div> ,<div className="empty"></div> , <div className="circle"></div> ,<div className="empty"></div> , 
+    <div className="empty"></div>,<div className="circle"></div>,<div className="empty"></div> ,<div className="circle"></div> ,<div className="empty"></div> , <div className="circle"></div> ,<div className="empty"></div> , <div className="circle"></div> ,
+    <div className="empty"></div>,<div className="empty"></div> ,<div className="empty"></div> ,<div className="empty"></div> ,<div className="empty"></div> ,<div className="empty"></div> ,<div className="empty"></div> ,<div className="empty"></div> ,
+    <div className="empty"></div> ,<div className="empty"></div> ,<div className="empty"></div> ,<div className="empty"></div> ,<div className="empty"></div> ,<div className="empty"></div> ,<div className="empty"></div> , <div className="empty"></div> ,
+    <div className="circleRed"></div>, <div className="empty"></div> ,<div className="circleRed"></div> ,<div className="empty"></div> ,<div className="circleRed"></div> ,<div className="empty"></div> , <div className="circleRed"></div> , <div className="empty"></div>
+    , <div className="empty"></div> ,<div className="circleRed"></div>,<div className="empty"></div> ,<div className="circleRed"></div> , <div className="empty"></div>, <div className="circleRed"></div> ,<div className="empty"></div> , <div className="circleRed"></div> ,
+    <div className="circleRed"></div>, <div className="empty"></div> ,<div className="circleRed"></div> , <div className="empty"></div> , <div className="circleRed"></div> , <div className="empty"></div>, <div className="circleRed"></div> , <div className="empty"></div>
 ]
 }
 /*

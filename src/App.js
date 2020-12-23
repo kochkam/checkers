@@ -25,18 +25,163 @@ import checkerArray from './array.js'
       super(props);
       this.state = {
         squares:  new checkerArray().squares,
-        xIsNext: true,
+        RedIsNext: true,
+        invalid: false,
+        currentSpace: null,
+        move: null,
       };
+    }
+
+    validateBlackMove(i, squares){
+      let leftMove = this.state.currentSpace + 7;
+      let rightMove = this.state.currentSpace + 9;
+      let takeP = null;
+      let valid = null;
+      if((i === leftMove && leftMove < 64) || (i === rightMove && leftMove < 64)){
+        valid = true;
+      }
+      else if((i === leftMove + 7 && leftMove + 7 < 64) || (i=== rightMove + 9 && leftMove + 9 < 64)){
+        if (squares[leftMove].props.className === "circleRed" ) {
+          takeP = leftMove
+        }
+        else if(squares[rightMove].props.className === "circleRed"){
+          takeP = rightMove
+        }
+        valid = true;
+      }
+        squares[i] = <div className="circle"></div>;
+        squares[this.state.currentSpace] = <div className="empty"></div>
+        if (takeP !== null) {
+          squares[takeP] = <div className="empty"></div>
+        }
+        if (valid === true) {
+          this.setState({
+            squares: squares,
+            RedIsNext: !this.state.RedIsNext,
+            invalid: false,
+            currentSpace: null,
+            move: true,
+          })
+        }
+        else{
+          this.setState({
+            move: false,
+          })
+        }
+      
+
+    }
+    
+
+    validateRedMove(i,squares){
+      let leftMove = this.state.currentSpace - 7;
+      let rightMove = this.state.currentSpace - 9;
+      let takeP = null;
+      let valid = null;
+      if((i === leftMove && leftMove > 0) || (i === rightMove && leftMove > 0)){
+        valid = true
+      }
+      if((i === leftMove - 7 && leftMove - 7 > 0) || (i === rightMove - 9 && rightMove - 9 > 0)){
+        if (squares[leftMove].props.className === "circle"){
+          takeP = leftMove  
+        }
+        else if(squares[rightMove].props.className === "circle"){
+          takeP = rightMove
+        }
+        valid = true;
+      }
+      squares[i] = <div className="circleRed"></div>;
+      squares[this.state.currentSpace] = <div className="empty"></div>
+      if (takeP !== null) {
+        squares[takeP] = <div className="empty"></div>
+      }
+      if (valid === true) {
+        this.setState({
+          squares: squares,
+          RedIsNext: !this.state.RedIsNext,
+          invalid: false,
+          currentSpace: null,
+          move: true,
+          })
+        }
+      else{
+        this.setState({
+          move: false,
+        })
+      }
+      
+    }
+
+    
+
+    selectSpace(i, squares){
+      if (this.state.RedIsNext === true && squares[i].props.className === "circle") {
+        squares[i] = <div className="circle"></div>;
+        this.setState({
+          squares: squares,
+          invalid: false,
+          currentSpace: i,
+        });
+        
+      }
+
+      else if (this.state.RedIsNext === false && squares[i].props.className === "circleRed") {
+        
+        squares[i] = <div className="circleRed"></div>;
+        this.setState({
+          squares: squares,
+          invalid: false,
+          currentSpace: i,
+        });
+
+      }
+    
+
+      else{
+        this.setState({
+          squares: squares,
+          invalid: true,
+        })
+      }
+
+    }
+
+    movePiece(i, squares){
+
+      if (squares[i].props.className === "empty") {
+        if (this.state.RedIsNext === true){
+          this.validateBlackMove(i,squares)
+        }
+
+        else if (this.state.RedIsNext === false){
+          this.validateRedMove(i,squares)
+        }
+        else{
+          this.setState({
+            move: false,
+          })
+        }
+      }
+
+      else{
+        this.setState({
+          move: false,
+        })
+      }
     }
   
     handleClick(i) {
       const squares = this.state.squares.slice();
 
-      squares[i] = this.state.xIsNext ? <div className="circle"></div> : <div className="circleRed"></div>;
-      this.setState({
-        squares: squares,
-        xIsNext: !this.state.xIsNext,
-      });
+      if (this.state.currentSpace == null) {
+      
+      this.selectSpace(i,squares)
+
+      }
+
+      else if (this.state.currentSpace !== null) {
+       this.movePiece(i,squares)
+      } 
     }
   
     renderSquare(i) {
@@ -61,11 +206,13 @@ import checkerArray from './array.js'
   
     render() {
       let counter = 0
+      let move = null
       let rows = []
+      let invalid = null
       for(let i = 0; i < 8; i++){
         const cells = []
         for (let x = 0; x < 8; x++){
-          if((counter % 2 == 0 && rows.length % 2 == 0) || (rows.length % 2 != 0 && counter % 2 != 0))
+          if((counter % 2 === 0 && rows.length % 2 === 0) || (rows.length % 2 !== 0 && counter % 2 !== 0))
             cells.push(this.renderSquare(counter))
           else
             cells.push(this.renderSquareAlt(counter))
@@ -74,12 +221,30 @@ import checkerArray from './array.js'
         }
         rows.push(<div className="board-row">{cells}</div>)
       }
+      const status = 'Current player: ' + (this.state.RedIsNext ? "Black" : "Red");
+      if (this.state.invalid === true) {
+        invalid = "Invalid piece select a valid piece."
+      }
+      else if (this.state.invalid === false) {
+        invalid =  ""
+      } 
 
-
+      if(this.state.move === true){
+        move = ""
+      }
+      else if (this.state.move === false){
+        move = "Invalid move please move your piece forward one space diagonally."
+      }
+      
+      
       return (
-
         <div>
-          {rows}
+          <div className="status">{status}</div>
+          <div>{invalid}</div>
+          <div>{move}</div>
+          <div>
+            {rows}
+          </div>
         </div>
       );
     }
@@ -105,3 +270,4 @@ import checkerArray from './array.js'
   
   // ========================================
   
+

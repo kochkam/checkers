@@ -31,20 +31,24 @@ import checkerArray from './array.js'
         move: null,
         moveM: false,
         doubcord: null,
+        wrongDjump:false,
       };
     }
     validateBDouble(i,squares){
       let dleftMove = i + 14;
       let drightMove = i + 18;
-      if(drightMove < 64){
+
+      if(dleftMove < 64){
         if((squares[dleftMove].props.className === "empty" && squares[dleftMove - 7].props.className === "circleRed")){
-          return true;
-        }
-        else if ((squares[drightMove].props.className === "empty" && squares[drightMove - 9].props.className === "circleRed")){
-          return true
+          return dleftMove;
         }
       }
-      return false;
+      if (drightMove < 64){
+        if ((squares[drightMove].props.className === "empty" && squares[drightMove - 9].props.className === "circleRed")){
+          return drightMove;
+      }
+    }
+      return null;
 
     }
     validateBlackMove(i, squares){
@@ -53,7 +57,11 @@ import checkerArray from './array.js'
       let takeP = null;
       let valid = null;
       let again = false;
-      if((i === leftMove && leftMove < 64) || (i === rightMove && leftMove < 64)){
+      let dcord = null; 
+      if (this.state.doubcord !== null && i !== this.state.doubcord) {
+        valid = false; 
+      }
+      else if((i === leftMove && leftMove < 64) || (i === rightMove && leftMove < 64)){
         valid = true;
       }
       else if((i === leftMove + 7 && leftMove + 7 < 64) || (i=== rightMove + 9 && leftMove + 9 < 64)){
@@ -63,16 +71,20 @@ import checkerArray from './array.js'
         else if(squares[rightMove].props.className === "circleRed"  && rightMove + 9 === i){
           takeP = rightMove
         }
-        if (this.validateBDouble(i,squares)) {
+        if (this.validateBDouble(i,squares) != null) {
           again = true
+          dcord = this.validateBDouble(i,squares)
+      
         }
         valid = true;
       }
+        
         squares[i] = <div className="circle"></div>;
         squares[this.state.currentSpace] = <div className="empty"></div>
         if (takeP !== null) {
           squares[takeP] = <div className="empty"></div>
         }
+
         if (valid === true && again === false) {
           this.setState({
             squares: squares,
@@ -81,6 +93,7 @@ import checkerArray from './array.js'
             currentSpace: null,
             move: true,
             moveM: false,
+            doubcord: null,
           })
         }
         else if(valid === true && again === true){
@@ -90,7 +103,15 @@ import checkerArray from './array.js'
             currentSpace: i,
             move: true,
             moveM: true,
+            doubcord: dcord,
           })
+        }
+        else if(valid === false && this.state.doubcord !== null && i !== this.state.doubcord)
+        {
+          this.setState({
+            wrongDjump: true,
+          })
+
         }
         
         else{
@@ -105,15 +126,18 @@ import checkerArray from './array.js'
     validateRDouble(i,squares){
       let dleftMove = i - 14;
       let drightMove = i - 18;
-      if(drightMove > 0){
-        if((squares[dleftMove].props.className === "empty" && squares[dleftMove + 7].props.className === "circle")){
-          return true;
-        }
-        else if ((squares[drightMove].props.className === "empty" && squares[drightMove + 9].props.className === "circle")){
-          return true
+
+        if(dleftMove > 0){
+          if((squares[dleftMove].props.className === "empty" && squares[dleftMove + 7].props.className === "circle")){
+            return dleftMove;
         }
       }
-      return false;
+        if(drightMove > 0){
+          if ((squares[drightMove].props.className === "empty" && squares[drightMove + 9].props.className === "circle")){
+            return drightMove
+          }
+        }
+      return null;
 
     }
 
@@ -123,18 +147,23 @@ import checkerArray from './array.js'
       let takeP = null;
       let valid = null;
       let again = false;
-      if((i === leftMove && leftMove > 0) || (i === rightMove && leftMove > 0)){
+      let dcord = null; 
+      if (this.state.doubcord !== null && i !== this.state.doubcord) {
+        valid = false; 
+      }
+      else if((i === leftMove && leftMove > 0) || (i === rightMove && leftMove > 0)){
         valid = true
       }
-      if((i === leftMove - 7 && leftMove - 7 > 0) || (i === rightMove - 9 && rightMove - 9 > 0)){
+      else if((i === leftMove - 7 && leftMove - 7 > 0) || (i === rightMove - 9 && rightMove - 9 > 0)){
         if (squares[leftMove].props.className === "circle" && leftMove - 7 === i){
           takeP = leftMove  
         }
         else if(squares[rightMove].props.className === "circle" && rightMove - 9 === i){
           takeP = rightMove
         }
-        if (this.validateRDouble(i,squares)) {
+        if (this.validateRDouble(i,squares) !== null) {
           again = true
+          dcord = this.validateRDouble(i,squares)
         }
         valid = true;
       }
@@ -151,6 +180,7 @@ import checkerArray from './array.js'
           currentSpace: null,
           move: true,
           moveM: false,
+          doubcord: null,
           })
         }
       else if(valid === true && again === true){
@@ -160,8 +190,15 @@ import checkerArray from './array.js'
             currentSpace: i,
             move: true,
             moveM: true,
+            doubcord: dcord,
           })
         }
+      else if(valid === false && this.state.doubcord !== null && i !== this.state.doubcord){
+          this.setState({
+            wrongDjump: true,
+          })
+
+        }      
       else{
         this.setState({
           move: false,
@@ -171,9 +208,45 @@ import checkerArray from './array.js'
     }
 
     
+    checkRselection(i,squares){
+      let leftMove = i - 7;
+      let rightMove = i - 9;
 
+
+      if (i === 55){
+        if(squares[i-9].props.className === "empty")
+          return true;
+        else  
+          return false; 
+      }
+      if((leftMove > 0 && squares[leftMove].props.className === "empty") || (rightMove > 0 && squares[rightMove].props.className === "empty")){
+        return true
+      }
+      else{
+        return false
+      }
+    }
+
+    checkBselection(i,squares){
+      let leftMove = i + 7;
+      let rightMove = i + 9;
+
+      if (i === 8){
+        if(squares[i+9].props.className === "empty")
+          return true;
+        else  
+          return false; 
+      }
+
+      if((leftMove < 64 && squares[leftMove].props.className === "empty") || (leftMove < 64 && squares[rightMove].props.className === "empty")){
+        return true;
+      }
+      else 
+        return false;
+
+    }
     selectSpace(i, squares){
-      if (this.state.RedIsNext === true && squares[i].props.className === "circle") {
+      if (this.state.RedIsNext === true && squares[i].props.className === "circle" && this.checkBselection(i,squares) === true) {
         squares[i] = <div className="circle"></div>;
         this.setState({
           squares: squares,
@@ -182,7 +255,7 @@ import checkerArray from './array.js'
         });
         
       }
-      else if (this.state.RedIsNext === false && squares[i].props.className === "circleRed") {
+      else if (this.state.RedIsNext === false && squares[i].props.className === "circleRed" && this.checkRselection(i,squares) === true) {
         
         squares[i] = <div className="circleRed"></div>;
         this.setState({
@@ -265,6 +338,7 @@ import checkerArray from './array.js'
       let rows = [];
       let invalid = null;
       let moveAgain = null;
+      let wrongDjmp= null;
       for(let i = 0; i < 8; i++){
         const cells = []
         for (let x = 0; x < 8; x++){
@@ -292,11 +366,17 @@ import checkerArray from './array.js'
         move = "Invalid move please move your piece forward one space diagonally."
       }
       if(this.state.moveM === true){
-        moveAgain = "Good move! Please make another jump as you still have another valid jump to make."
+        moveAgain = "Good move! Please make the next valid double jump available to you."
       }
       else if (this.state.moveM === false)
       {
         moveAgain = ""
+      }
+      if(this.state.wrongDjump === true){
+        wrongDjmp = "Invalid move. You must make the double jump available to you. "
+      }
+      else{
+        wrongDjmp = ""
       }
       
       
@@ -306,6 +386,7 @@ import checkerArray from './array.js'
           <div>{invalid}</div>
           <div>{move}</div>
           <div>{moveAgain}</div>
+          <div>{wrongDjmp}</div>
           <div>
             {rows}
           </div>

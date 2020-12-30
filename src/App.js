@@ -32,25 +32,72 @@ import checkerArray from './array.js'
         moveM: false,
         doubcord: null,
         wrongDjump:false,
+        invalidA: [0,16,32,48,15,31,47,63],
       };
     }
+
+   validSpace(space){
+
+      for(let x = 0; x < this.state.invalidA.length; x++){
+        if (this.state.invalidA[x] === space) {
+          return false;
+        }
+      }
+      return true
+
+   }
     validateBDouble(i,squares){
       let dleftMove = i + 14;
       let drightMove = i + 18;
+      let dAltRightMove = i -14;
+      let dAltLeftMove = i - 18;
+      let moveArray = []; 
 
-      if(dleftMove < 64){
-        if((squares[dleftMove].props.className === "empty" && squares[dleftMove - 7].props.className === "circleRed")){
-          return dleftMove;
+
+      if (dleftMove < 64) {
+
+        if((this.validSpace(dleftMove) && dleftMove - 7 < 64 && squares[dleftMove].props.className === "empty" && (squares[dleftMove - 7].props.className === "circleRed" || squares[dleftMove - 7].props.className === "kingRed"))){
+          moveArray.push(dleftMove);
         }
       }
       if (drightMove < 64){
-        if ((squares[drightMove].props.className === "empty" && squares[drightMove - 9].props.className === "circleRed")){
-          return drightMove;
+        if ((this.validSpace(drightMove) && drightMove - 9 < 64 && squares[drightMove].props.className === "empty" && (squares[drightMove - 9].props.className === "circleRed" || squares[drightMove - 9].props.className === "kingRed"))){
+          moveArray.push(drightMove);
+        }
       }
+    
+      if (squares[this.state.currentSpace].props.className === "blackKing") {
+        if (dAltLeftMove > 0) {
+          if ((this.validSpace(dAltRightMove) && dAltRightMove + 9 > 0 && squares[dAltRightMove].props.className === "empty" && (squares[dAltRightMove + 9].props.className === "circleRed" || squares[dAltRightMove + 9].props.className === "kingRed"))){
+
+            moveArray.push(dAltRightMove); 
+          }
+        }
+        if (dAltRightMove > 0){
+          if ((this.validSpace(dAltLeftMove) && dAltLeftMove + 7 > 0 && squares[dAltLeftMove].props.className === "empty" && (squares[dAltLeftMove + 7].props.className === "circleRed" || squares[dAltLeftMove + 7].props.className === "kingRed"))){
+            moveArray.push(dAltLeftMove);
+          }
+        }
     }
-      return null;
+      if (moveArray.length > 0) {
+        return moveArray;
+      }
+      else
+        return null;
 
     }
+
+    validateDcord(i){
+
+      for(let x = 0; x < this.state.doubcord.length; x++){
+        if (this.state.doubcord[x] === i) {
+            return true; 
+        }
+      }
+
+      return false; 
+    }
+
     selectState(squares,valid,again,i,dcord){
       if (valid === true && again === false) {
         this.setState({
@@ -61,6 +108,7 @@ import checkerArray from './array.js'
           move: true,
           moveM: false,
           doubcord: null,
+          wrongDjump: false,
           })
         }
       else if(valid === true && again === true){
@@ -71,9 +119,10 @@ import checkerArray from './array.js'
             move: true,
             moveM: true,
             doubcord: dcord,
+            wrongDjump: false,
           })
         }
-      else if(valid === false && this.state.doubcord !== null && i !== this.state.doubcord){
+      else if(valid === false && this.state.doubcord !== null && this.validateDcord(i) === false){
           this.setState({
             wrongDjump: true,
           })
@@ -92,17 +141,23 @@ import checkerArray from './array.js'
       let altRightMove = this.state.currentSpace - 7;
       let altLeftMove = this.state.currentSpace - 9;
 
-      if((leftMove < 64 && leftMove === i) || (rightMove < 64 && squares[rightMove].props.className === "empty") || (altRightMove > 0 && squares[altRightMove].props.className === "empty") || (altLeftMove > 0 && squares[altLeftMove].props.className === "empty")){
-        return true;
+      if((leftMove < 64 && leftMove === i) || (rightMove < 64 && rightMove === i) || (altRightMove > 0 && altRightMove === i) || (altLeftMove > 0 && altLeftMove === i)){
+        return null;
       }
-      else if((leftMove < 64 && squares[leftMove + 7].props.className === "empty" && (squares[leftMove].props.className === "circleRed" || squares[leftMove].props.className === "redKing")) || (rightMove < 64 && squares[rightMove + 9].props.className === "empty" && (squares[rightMove].props.className === "circleRed" || squares[rightMove].props.className === "redKing"))){
-        return true;
+      else if((leftMove < 64 && leftMove + 7 === i && (squares[leftMove].props.className === "circleRed" || squares[leftMove].props.className === "redKing"))){
+        return leftMove;
       }
-      else if((altLeftMove > 0 && squares[altLeftMove - 7].props.className === "empty" && (squares[altLeftMove].props.className === "circleRed" || squares[altLeftMove].props.className === "redKing")) || (altRightMove > 0 && squares[altRightMove - 9].props.className === "empty" && (squares[altRightMove].props.className === "circleRed" || squares[altRightMove].props.className === "redKing"))){
-        return true;
+      else if ((rightMove < 64 && rightMove + 9 === i && (squares[rightMove].props.className === "circleRed" || squares[rightMove].props.className === "redKing"))){
+        return rightMove;
+      }
+      else if((altLeftMove > 0 && altLeftMove - 9 === i && (squares[altLeftMove].props.className === "circleRed" || squares[altLeftMove].props.className === "redKing"))){
+        return altLeftMove;
+      }
+      else if((altRightMove > 0 && altRightMove - 7 === i && (squares[altRightMove].props.className === "circleRed" || squares[altRightMove].props.className === "redKing"))){
+        return altRightMove
       }
       else{
-        return false; 
+        return null; 
       }
 
     }
@@ -115,34 +170,35 @@ import checkerArray from './array.js'
       let dcord = null; 
       let kingPiece = squares[this.state.currentSpace].props.className;
 
-      if (this.state.doubcord !== null && i !== this.state.doubcord) {
+      if (this.state.doubcord !== null && this.validateDcord(i) === false) {
         valid = false; 
       }
-      else if (kingPiece === "blackKing"){
+      else if (kingPiece === "blackKing" && this.validSpace(i)){
         valid = this.checkBselection(this.state.currentSpace,squares)
         if(valid === true){
           takeP = this.validateBlkKing(i,squares)}
-        if (this.validateBDouble(i,squares) != null) {
+        if (this.validateBDouble(i,squares) !== null && takeP !== null) {
           again = true
           dcord = this.validateBDouble(i,squares)
         }
       }
-      else if((i === leftMove && leftMove < 64) || (i === rightMove && leftMove < 64)){
+      else if(((i === leftMove && leftMove < 64) || (i === rightMove && leftMove < 64)) && this.validSpace(i)){
         valid = true;
       }
-      else if((i === leftMove + 7 && leftMove + 7 < 64) || (i=== rightMove + 9 && leftMove + 9 < 64)){
+      else if(((i === leftMove + 7 && leftMove + 7 < 64) || (i=== rightMove + 9 && leftMove + 9 < 64)) && this.validSpace(i)){
         if ((squares[leftMove].props.className === "circleRed" || squares[leftMove].props.className === "redKing")  && leftMove + 7 === i ) {
           takeP = leftMove
+          valid = true;
         }
-        else if((squares[rightMove].props.className === "circleRed" || squares[leftMove].props.className === "redKing") && rightMove + 9 === i){
+        else if((squares[rightMove].props.className === "circleRed" || squares[rightMove].props.className === "redKing") && rightMove + 9 === i){
           takeP = rightMove
+          valid = true;
         }
-        if (this.validateBDouble(i,squares) != null) {
+        if (this.validateBDouble(i,squares) != null && takeP !== null) {
           again = true
           dcord = this.validateBDouble(i,squares)
       
         }
-        valid = true;
       }
         
       if(squares[this.state.currentSpace].props.className === "circle" && i > 55){
@@ -167,20 +223,70 @@ import checkerArray from './array.js'
     }
     
     validateRDouble(i,squares){
-      let dleftMove = i - 14;
-      let drightMove = i - 18;
-
-        if(dleftMove > 0){
-          if((squares[dleftMove].props.className === "empty" && squares[dleftMove + 7].props.className === "circle")){
-            return dleftMove;
-        }
-      }
-        if(drightMove > 0){
-          if ((squares[drightMove].props.className === "empty" && squares[drightMove + 9].props.className === "circle")){
-            return drightMove
+      let dleftMove = i - 18;
+      let drightMove = i - 14;
+      let dAltRightMove = i + 18;
+      let dAltLeftMove = i + 14;
+      let moveArray = [];
+ 
+        if (dleftMove > 0) {
+          if((this.validSpace(dleftMove) && dleftMove + 9 > 0 && squares[dleftMove].props.className === "empty" && (squares[dleftMove + 9].props.className === "circle" || squares[dleftMove + 9].props.className === "blackKing"))){
+            moveArray.push(dleftMove);
           }
         }
-      return null;
+          
+        if (drightMove > 0){
+          if ((this.validSpace(drightMove) && drightMove + 7 > 0 && squares[drightMove].props.className === "empty" && (squares[drightMove + 7].props.className === "circle" || squares[drightMove + 7].props.className === "blackKing"))){
+            moveArray.push(drightMove);
+          }
+        }
+
+        if (squares[this.state.currentSpace].props.className === "redKing") {
+          if (dAltRightMove < 64) {
+            
+            if ((this.validSpace(dAltRightMove) &&  dAltRightMove - 9 < 64 && squares[dAltRightMove].props.className === "empty" && (squares[dAltRightMove - 9].props.className === "circle" || squares[dAltRightMove + 9].props.className === "blackKing"))){
+              moveArray.push(dAltRightMove); 
+            }
+          }
+          if (dAltLeftMove < 64){
+            if ((this.validSpace(dAltLeftMove) && dAltLeftMove - 7 < 64 && squares[dAltLeftMove].props.className === "empty" && (squares[dAltLeftMove - 7].props.className === "circle" || squares[dAltLeftMove + 7].props.className === "blackKing"))){
+              moveArray.push(dAltLeftMove);
+          }
+          }
+      }
+      if (moveArray.length > 0) {
+        return moveArray;
+      }
+      else
+        return null;
+
+
+    }
+
+    validateRedKing(i,squares){
+      let leftMove = this.state.currentSpace + 7;
+      let rightMove = this.state.currentSpace + 9;
+      let altRightMove = this.state.currentSpace - 7;
+      let altLeftMove = this.state.currentSpace - 9;
+
+      if((leftMove < 64 && leftMove === i) || (rightMove < 64 && rightMove === i) || (altRightMove > 0 && altRightMove === i) || (altLeftMove > 0 && altLeftMove === i)){
+        return null;
+      }
+      else if((leftMove < 64 && leftMove + 7 === i && (squares[leftMove].props.className === "circle" || squares[leftMove].props.className === "blackKing"))){
+        return leftMove;
+      }
+      else if ((rightMove < 64 && rightMove + 9 === i && (squares[rightMove].props.className === "circle" || squares[rightMove].props.className === "blackKing"))){
+        return rightMove;
+      }
+      else if((altLeftMove > 0 && altLeftMove - 9 === i && (squares[altLeftMove].props.className === "circle" || squares[altLeftMove].props.className === "blackKing"))){
+        return altLeftMove;
+      }
+      else if((altRightMove > 0 && altRightMove - 7 === i && (squares[altRightMove].props.className === "circle" || squares[altRightMove].props.className === "blackKing"))){
+        return altRightMove
+      }
+      else{
+        return null; 
+      }
 
     }
 
@@ -191,24 +297,36 @@ import checkerArray from './array.js'
       let valid = null;
       let again = false;
       let dcord = null; 
-      if (this.state.doubcord !== null && i !== this.state.doubcord) {
+      let kingPiece = squares[this.state.currentSpace].props.className;
+      if (this.state.doubcord !== null && this.validateDcord(i) === false) {
         valid = false; 
       }
-      else if((i === leftMove && leftMove > 0) || (i === rightMove && leftMove > 0)){
-        valid = true
-      }
-      else if((i === leftMove - 7 && leftMove - 7 > 0) || (i === rightMove - 9 && rightMove - 9 > 0)){
-        if (squares[leftMove].props.className === "circle" && leftMove - 7 === i){
-          takeP = leftMove  
-        }
-        else if(squares[rightMove].props.className === "circle" && rightMove - 9 === i){
-          takeP = rightMove
-        }
-        if (this.validateRDouble(i,squares) !== null) {
+      else if (kingPiece === "redKing" && this.validSpace(i)){
+        valid = this.checkRselection(this.state.currentSpace,squares)
+        if(valid === true){
+          takeP = this.validateRedKing(i,squares)}
+        if (this.validateRDouble(i,squares) !== null && takeP !== null) {
           again = true
           dcord = this.validateRDouble(i,squares)
         }
-        valid = true;
+      }
+      else if(((i === leftMove && leftMove > 0) || (i === rightMove && leftMove > 0)) && this.validSpace(i)){
+        valid = true
+      }
+      else if(((i === leftMove - 7 && leftMove - 7 > 0) || (i === rightMove - 9 && rightMove - 9 > 0)) && this.validSpace(i)){
+        if ((squares[leftMove].props.className === "circle" || squares[leftMove].props.className === "blackKing") && leftMove - 7 === i){
+          takeP = leftMove;  
+          valid = true;
+        }
+        else if((squares[rightMove].props.className === "circle" || squares[rightMove].props.className === "blackKing") && rightMove - 9 === i){
+          takeP = rightMove;
+          valid = true; 
+        }
+        if (this.validateRDouble(i,squares) !== null && takeP !== null) {
+          again = true;
+          dcord = this.validateRDouble(i,squares);
+          valid = true;
+        }
       }
       if(squares[this.state.currentSpace].props.className === "circleRed" && i < 8){
         squares[i] = <div className="redKing">K</div>;
@@ -236,27 +354,32 @@ import checkerArray from './array.js'
         else  
           return false; 
       } 
+      else return true;
     }
     checkRkingSelection(i,squares){
       let leftMove = i + 7;
       let rightMove = i + 9;
       let altRightMove = i - 7;
       let altLeftMove = i - 9
-      if (this.redException(i,squares)){
-        return true}
 
-      if((leftMove < 64 && squares[leftMove].props.className === "empty") || (rightMove < 64 && squares[rightMove].props.className === "empty") || (altRightMove > 0 && squares[altRightMove].props.className === "empty") || (altLeftMove > 0 && squares[altLeftMove].props.className === "empty")){
-        return true;
+      if(squares[i].props.className === "redKing"){
+        if (this.redException(i,squares)){
+          return true}
+
+        if((leftMove < 64 && squares[leftMove].props.className === "empty") || (rightMove < 64 && squares[rightMove].props.className === "empty") || (altRightMove > 0 && squares[altRightMove].props.className === "empty") || (altLeftMove > 0 && squares[altLeftMove].props.className === "empty")){
+          return true;
+        }
+        else if((leftMove < 64 && squares[leftMove + 7].props.className === "empty" && (squares[leftMove].props.className === "circleRed" || squares[leftMove].props.className === "redKing")) || (rightMove < 64 && squares[rightMove + 9].props.className === "empty" && (squares[rightMove].props.className === "circleRed" || squares[rightMove].props.className === "redKing"))){
+          return true;
+        }
+        else if((altLeftMove > 0 && squares[altLeftMove - 7].props.className === "empty" && (squares[altLeftMove].props.className === "circleRed" || squares[altLeftMove].props.className === "redKing")) || (altRightMove > 0 && squares[altRightMove - 9].props.className === "empty" && (squares[altRightMove].props.className === "circleRed" || squares[altRightMove].props.className === "redKing"))){
+          return true;
+        }
+        else{
+          return false; 
+        }
       }
-      else if((leftMove < 64 && squares[leftMove + 7].props.className === "empty" && (squares[leftMove].props.className === "circleRed" || squares[leftMove].props.className === "redKing")) || (rightMove < 64 && squares[rightMove + 9].props.className === "empty" && (squares[rightMove].props.className === "circleRed" || squares[rightMove].props.className === "redKing"))){
-        return true;
-      }
-      else if((altLeftMove > 0 && squares[altLeftMove - 7].props.className === "empty" && (squares[altLeftMove].props.className === "circleRed" || squares[altLeftMove].props.className === "redKing")) || (altRightMove > 0 && squares[altRightMove - 9].props.className === "empty" && (squares[altRightMove].props.className === "circleRed" || squares[altRightMove].props.className === "redKing"))){
-        return true;
-      }
-      else{
-        return false; 
-      }
+      else return false;
 
     }
     
@@ -296,21 +419,24 @@ import checkerArray from './array.js'
       let rightMove = i + 9;
       let altRightMove = i - 7;
       let altLeftMove = i - 9;
-      if (this.blackException(i,squares)) {
-        return true;  
-      }
-      if((leftMove < 64 && squares[leftMove].props.className === "empty") || (rightMove < 64 && squares[rightMove].props.className === "empty") || (altRightMove > 0 && squares[altRightMove].props.className === "empty") || (altLeftMove > 0 && squares[altLeftMove].props.className === "empty")){
-        return true;
-      }
-      else if((leftMove < 64 && squares[leftMove + 7].props.className === "empty" && (squares[leftMove].props.className === "circleRed" || squares[leftMove].props.className === "redKing")) || (rightMove < 64 && squares[rightMove + 9].props.className === "empty" && (squares[rightMove].props.className === "circleRed" || squares[rightMove].props.className === "redKing"))){
-        return true;
-      }
-      else if((altLeftMove > 0 && squares[altLeftMove - 7].props.className === "empty" && (squares[altLeftMove].props.className === "circleRed" || squares[altLeftMove].props.className === "redKing")) || (altRightMove > 0 && squares[altRightMove - 9].props.className === "empty" && (squares[altRightMove].props.className === "circleRed" || squares[altRightMove].props.className === "redKing"))){
-        return true;
-      }
-      else{
-        return false; 
-      }
+
+      if(squares[i].props.className === "blackKing"){
+        if (this.blackException(i,squares)) {
+          return true;  
+        }
+        if((leftMove < 64 && squares[leftMove].props.className === "empty") || (rightMove < 64 && squares[rightMove].props.className === "empty") || (altRightMove > 0 && squares[altRightMove].props.className === "empty") || (altLeftMove > 0 && squares[altLeftMove].props.className === "empty")){
+          return true;
+        }
+        else if((leftMove < 64 && squares[leftMove + 7].props.className === "empty" && (squares[leftMove].props.className === "circleRed" || squares[leftMove].props.className === "redKing")) || (rightMove < 64 && squares[rightMove + 9].props.className === "empty" && (squares[rightMove].props.className === "circleRed" || squares[rightMove].props.className === "redKing"))){
+          return true;
+        }
+        else if((altLeftMove > 0 && squares[altLeftMove - 9].props.className === "empty" && (squares[altLeftMove].props.className === "circleRed" || squares[altLeftMove].props.className === "redKing")) || (altRightMove > 0 && squares[altRightMove - 7].props.className === "empty" && (squares[altRightMove].props.className === "circleRed" || squares[altRightMove].props.className === "redKing"))){
+          return true;
+        }
+        else{
+          return false; 
+        }
+    }
     }
     checkBselection(i,squares){
       let leftMove = i + 7;
@@ -385,7 +511,11 @@ import checkerArray from './array.js'
     handleClick(i) {
       const squares = this.state.squares.slice();
 
-      if (this.state.currentSpace == null) {
+      if (calculateWinner(squares)){
+        return;
+      }
+
+      else if (this.state.currentSpace == null) {
       
       this.selectSpace(i,squares)
 
@@ -435,7 +565,15 @@ import checkerArray from './array.js'
         }
         rows.push(<div className="board-row">{cells}</div>)
       }
-      const status = 'Current player: ' + (this.state.RedIsNext ? "Black" : "Red");
+
+      const winner = calculateWinner(this.state.squares);
+      let status; 
+      if (winner) {
+        status = "Winner: " + winner;
+      } else{
+        status = 'Current player: ' + (this.state.RedIsNext ? "Black" : "Red"); 
+      }
+
       if (this.state.invalid === true) {
         invalid = "Invalid piece select a valid piece."
       }
@@ -467,13 +605,13 @@ import checkerArray from './array.js'
       return (
         <div>
           <div className="status">{status}</div>
+          <div>
+            {rows}
+          </div>
           <div>{invalid}</div>
           <div>{move}</div>
           <div>{moveAgain}</div>
           <div>{wrongDjmp}</div>
-          <div>
-            {rows}
-          </div>
         </div>
       );
     }
@@ -499,4 +637,27 @@ import checkerArray from './array.js'
   
   // ========================================
   
+function calculateWinner(squares){
+    let redCount = 0;
+    let blackCount = 0; 
+    for (let i = 0; i < squares.length; i++){
+      if (squares[i].props.className === "redKing" || squares[i].props.className === "circleRed") {
+        redCount = redCount + 1;
+      }
+      else if(squares[i].props.className === "blackKing" || squares[i].props.className === "circle"){
+        blackCount = blackCount + 1;
+      }
 
+    }
+    if (blackCount === 0) {
+        return "Red";
+    }
+    else if (redCount === 0)
+    {
+      return "Black";
+    }
+    else{
+      return null; 
+    }
+
+}

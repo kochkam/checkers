@@ -24,12 +24,12 @@ ol, ul {
   font-size: 24px;
   font-weight: bold;
   line-height: 34px;
-  height: 34px;
+  height: 75px;
   margin-right: -1px;
   margin-top: -1px;
   padding: 0;
   text-align: center;
-  width: 34px;
+  width: 75px;
 }
 
 .darksquare{
@@ -40,20 +40,20 @@ ol, ul {
   font-size: 24px;
   font-weight: bold;
   line-height: 34px;
-  height: 34px;
+  height: 75px;
   margin-right: -1px;
   margin-top: -1px;
   padding: 0;
   text-align: center;
-  width: 34px;
+  width: 75px;
 }
 
 .circle {
   border-radius: 50%;
   background-color: black;
-  width: 20px;
-  height: 20px;
-  margin: 6px;
+  width: 40px;
+  height: 40px;
+  margin: 16px;
   text-align: center;
   line-height: 21px;
   font-size: 15px;
@@ -65,9 +65,9 @@ ol, ul {
 
   border-radius: 50%;
   background-color: Red;
-  width: 20px;
-  height: 20px;
-  margin: 6px;
+  width: 40px;
+  height: 40px;
+  margin: 16px;
   text-align: center;
   line-height: 21px;
   font-size: 15px;
@@ -78,12 +78,12 @@ ol, ul {
 .redKing{
   border-radius: 50%;
   background-color: Red;
-  width: 20px;
-  height: 20px;
-  margin: 6px;
+  width: 40px;
+  height: 40px;
+  margin: 16px;
   text-align: center;
-  line-height: 21px;
-  font-size: 15px;
+  line-height: 40px;
+  font-size: 25px;
   font-weight: 8px;
 
 }
@@ -91,14 +91,24 @@ ol, ul {
 .blackKing{
   border-radius: 50%;
   background-color: black;
-  width: 20px;
-  height: 20px;
-  margin: 6px;
+  width: 40px;
+  height: 40px;
+  margin: 16px;
   text-align: center;
   line-height: 21px;
-  font-size: 15px;
-  font-weight: 8px;
+  line-height: 40px;
+  font-size: 25px;
   color: white;
+}
+
+.resetButton{
+  background-color:green;
+  color: white;
+  padding: 12px 28px;
+}
+.resetButton:hover{
+  background-color: white;
+  color: black;
 }
 
 .kbd-navigation .square:focus {
@@ -107,7 +117,9 @@ ol, ul {
 
 .game {
   display: flex;
-  flex-direction: row;
+  padding: 10px;
+  width: 50%;
+  margin: 50px 650px;
 }
 
 .game-info {

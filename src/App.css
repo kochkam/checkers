@@ -11,6 +11,8 @@ ol, ul {
   clear: both;
   content: "";
   display: table;
+  justify-content: center;
+  align-items: center;
 }
 
 .status {
@@ -28,7 +30,9 @@ ol, ul {
   margin-right: -1px;
   margin-top: -1px;
   padding: 0;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 75px;
 }
 
@@ -44,7 +48,9 @@ ol, ul {
   margin-right: -1px;
   margin-top: -1px;
   padding: 0;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   width: 75px;
 }
 
@@ -54,11 +60,9 @@ ol, ul {
   width: 40px;
   height: 40px;
   margin: 16px;
-  text-align: center;
-  line-height: 21px;
-  font-size: 15px;
-  font-weight: 8px;
-
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .circleRed {
@@ -68,10 +72,9 @@ ol, ul {
   width: 40px;
   height: 40px;
   margin: 16px;
-  text-align: center;
-  line-height: 21px;
-  font-size: 15px;
-  font-weight: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 
@@ -117,9 +120,8 @@ ol, ul {
 
 .game {
   display: flex;
-  padding: 10px;
-  width: 50%;
-  margin: 50px 650px;
+  justify-content: center;
+  align-items: center;
 }
 
 .game-info {

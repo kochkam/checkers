@@ -175,7 +175,7 @@ import checkerArray from './array.js';
         valid = false; 
       }
       else if (kingPiece === "blackKing" && this.validSpace(i)){
-        valid = this.checkBselection(this.state.currentSpace,squares)
+        valid = this.validBKingMove(i,squares)
         if(valid === true){
           takeP = this.validateBlkKing(i,squares)}
         if (this.validateBDouble(i,squares) !== null && takeP !== null) {
@@ -292,8 +292,8 @@ import checkerArray from './array.js';
     }
 
     validateRedMove(i,squares){
-      let leftMove = this.state.currentSpace - 7;
-      let rightMove = this.state.currentSpace - 9;
+      let leftMove = this.state.currentSpace - 9;
+      let rightMove = this.state.currentSpace - 7;
       let takeP = null;
       let valid = null;
       let again = false;
@@ -303,7 +303,7 @@ import checkerArray from './array.js';
         valid = false; 
       }
       else if (kingPiece === "redKing" && this.validSpace(i)){
-        valid = this.checkRselection(this.state.currentSpace,squares)
+        valid = this.validRKingMove(i,squares)
         if(valid === true){
           takeP = this.validateRedKing(i,squares)}
         if (this.validateRDouble(i,squares) !== null && takeP !== null) {
@@ -314,12 +314,12 @@ import checkerArray from './array.js';
       else if(((i === leftMove && leftMove > 0) || (i === rightMove && leftMove > 0)) && this.validSpace(i)){
         valid = true
       }
-      else if(((i === leftMove - 7 && leftMove - 7 > 0) || (i === rightMove - 9 && rightMove - 9 > 0)) && this.validSpace(i)){
-        if ((squares[leftMove].props.className === "circle" || squares[leftMove].props.className === "blackKing") && leftMove - 7 === i){
+      else if(((i === leftMove - 9 && leftMove - 9 > 0) || (i === rightMove - 7 && rightMove - 7 > 0)) && this.validSpace(i)){
+        if ((squares[leftMove].props.className === "circle" || squares[leftMove].props.className === "blackKing") && leftMove - 9 === i){
           takeP = leftMove;  
           valid = true;
         }
-        else if((squares[rightMove].props.className === "circle" || squares[rightMove].props.className === "blackKing") && rightMove - 9 === i){
+        else if((squares[rightMove].props.className === "circle" || squares[rightMove].props.className === "blackKing") && rightMove - 7 === i){
           takeP = rightMove;
           valid = true; 
         }
@@ -371,10 +371,57 @@ import checkerArray from './array.js';
         if((leftMove < 64 && squares[leftMove].props.className === "empty") || (rightMove < 64 && squares[rightMove].props.className === "empty") || (altRightMove > 0 && squares[altRightMove].props.className === "empty") || (altLeftMove > 0 && squares[altLeftMove].props.className === "empty")){
           return true;
         }
+        else if((leftMove < 64 && squares[leftMove + 7].props.className === "empty" && (squares[leftMove].props.className === "circle" || squares[leftMove].props.className === "blackKing")) || (rightMove < 64 && squares[rightMove + 9].props.className === "empty" && (squares[rightMove].props.className === "circle" || squares[rightMove].props.className === "blackKing"))){
+          return true;
+        }
+        else if((altLeftMove > 0 && squares[altLeftMove - 9].props.className === "empty" && (squares[altLeftMove].props.className === "circle" || squares[altLeftMove].props.className === "blackKing")) || (altRightMove > 0 && squares[altRightMove - 7].props.className === "empty" && (squares[altRightMove].props.className === "circle" || squares[altRightMove].props.className === "blackKing"))){
+          return true;
+        }
+        else{
+          return false; 
+        }
+      }
+      else return false;
+
+    }
+    validBKingMove(i,squares){
+      let leftMove = this.state.currentSpace + 7;
+      let rightMove = this.state.currentSpace  + 9;
+      let altRightMove = this.state.currentSpace  - 7;
+      let altLeftMove = this.state.currentSpace  - 9
+
+      if(squares[this.state.currentSpace].props.className === "blackKing"){
+        if((leftMove < 64 && leftMove === i) || (rightMove < 64 && rightMove === i) || (altRightMove > 0 && altRightMove === i) || (altLeftMove > 0 && altLeftMove === i)){
+          return true;
+        }
         else if((leftMove < 64 && squares[leftMove + 7].props.className === "empty" && (squares[leftMove].props.className === "circleRed" || squares[leftMove].props.className === "redKing")) || (rightMove < 64 && squares[rightMove + 9].props.className === "empty" && (squares[rightMove].props.className === "circleRed" || squares[rightMove].props.className === "redKing"))){
           return true;
         }
-        else if((altLeftMove > 0 && squares[altLeftMove - 7].props.className === "empty" && (squares[altLeftMove].props.className === "circleRed" || squares[altLeftMove].props.className === "redKing")) || (altRightMove > 0 && squares[altRightMove - 9].props.className === "empty" && (squares[altRightMove].props.className === "circleRed" || squares[altRightMove].props.className === "redKing"))){
+        else if((altLeftMove > 0 && squares[altLeftMove - 9].props.className === "empty" && (squares[altLeftMove].props.className === "circleRed" || squares[altLeftMove].props.className === "redKing")) || (altRightMove > 0 && squares[altRightMove - 7].props.className === "empty" && (squares[altRightMove].props.className === "circleRed" || squares[altRightMove].props.className === "redKing"))){
+          return true;
+        }
+        else{
+          return false; 
+        }
+      }
+      else return false;
+
+    }
+
+    validRKingMove(i,squares){
+      let leftMove = this.state.currentSpace + 7;
+      let rightMove = this.state.currentSpace  + 9;
+      let altRightMove = this.state.currentSpace  - 7;
+      let altLeftMove = this.state.currentSpace  - 9
+
+      if(squares[this.state.currentSpace].props.className === "redKing"){
+        if((leftMove < 64 && leftMove === i) || (rightMove < 64 && rightMove === i) || (altRightMove > 0 && altRightMove === i) || (altLeftMove > 0 && altLeftMove === i)){
+          return true;
+        }
+        else if((leftMove < 64 && squares[leftMove + 7].props.className === "empty" && (squares[leftMove].props.className === "circle" || squares[leftMove].props.className === "blackKing")) || (rightMove < 64 && squares[rightMove + 9].props.className === "empty" && (squares[rightMove].props.className === "circle" || squares[rightMove].props.className === "blackKing"))){
+          return true;
+        }
+        else if((altLeftMove > 0 && squares[altLeftMove - 9].props.className === "empty" && (squares[altLeftMove].props.className === "circle" || squares[altLeftMove].props.className === "blackKing")) || (altRightMove > 0 && squares[altRightMove - 7].props.className === "empty" && (squares[altRightMove].props.className === "circle" || squares[altRightMove].props.className === "blackKing"))){
           return true;
         }
         else{
@@ -396,7 +443,7 @@ import checkerArray from './array.js';
       else if((leftMove > 0 && squares[leftMove].props.className === "empty") || (rightMove > 0 && squares[rightMove].props.className === "empty")){
         return true
       }
-      else if((leftMove > 0 && leftMove - 9 > 0 && squares[leftMove - 9].props.className === "empty" && squares[leftMove].props.className === "circle") || (rightMove > 0 && rightMove - 7 > 0 && squares[rightMove - 7].props.className === "empty" && squares[rightMove].props.className === "circle")){
+      else if((leftMove > 0 && leftMove - 9 > 0 && squares[leftMove - 9].props.className === "empty" && (squares[leftMove].props.className === "circle" || squares[leftMove].props.className === "blackKing" )) || (rightMove > 0 && rightMove - 7 > 0 && squares[rightMove - 7].props.className === "empty" && (squares[rightMove].props.className === "circle" || squares[rightMove].props.className === "blackKing" ))){
         return true;
       }
       else{
@@ -454,7 +501,7 @@ import checkerArray from './array.js';
       if((leftMove < 64 && squares[leftMove].props.className === "empty") || (rightMove < 64 && squares[rightMove].props.className === "empty")){
         return true;
       }
-      if((leftMove < 64 && leftMove + 7 < 64 && squares[leftMove + 7].props.className === "empty" && squares[leftMove].props.className === "circleRed") || (rightMove < 64 && rightMove + 9 < 64 && squares[rightMove + 9].props.className === "empty" && squares[rightMove].props.className === "circleRed")){
+      if((leftMove < 64 && leftMove + 7 < 64 && squares[leftMove + 7].props.className === "empty" && (squares[leftMove].props.className === "circleRed" || squares[leftMove].props.className === "redKing")) || (rightMove < 64 && rightMove + 9 < 64 && squares[rightMove + 9].props.className === "empty" && (squares[rightMove].props.className === "circleRed" || squares[rightMove].props.className === "redKing" ))){
         return true;
       }
       else 

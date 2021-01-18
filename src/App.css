@@ -1,7 +1,22 @@
-body {
+body{
+  display: flex;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding: 10px;
   font: 14px "Century Gothic", Futura, sans-serif;
   margin: 20px;
+
 }
+
+th {
+  text-align: center;
+  border: 1px solid black;
+  background: #018ded;
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
+}
+
 
 ol, ul {
   padding-left: 30px;

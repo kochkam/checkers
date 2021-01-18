@@ -394,10 +394,10 @@ import checkerArray from './array.js';
         if((leftMove < 64 && leftMove === i) || (rightMove < 64 && rightMove === i) || (altRightMove > 0 && altRightMove === i) || (altLeftMove > 0 && altLeftMove === i)){
           return true;
         }
-        else if((leftMove < 64 && squares[leftMove + 7].props.className === "empty" && (squares[leftMove].props.className === "circleRed" || squares[leftMove].props.className === "redKing")) || (rightMove < 64 && squares[rightMove + 9].props.className === "empty" && (squares[rightMove].props.className === "circleRed" || squares[rightMove].props.className === "redKing"))){
+        else if((leftMove + 7 < 64 && squares[leftMove + 7].props.className === "empty" && (squares[leftMove].props.className === "circleRed" || squares[leftMove].props.className === "redKing")) || (rightMove + 9 < 64 && squares[rightMove + 9].props.className === "empty" && (squares[rightMove].props.className === "circleRed" || squares[rightMove].props.className === "redKing"))){
           return true;
         }
-        else if((altLeftMove > 0 && squares[altLeftMove - 9].props.className === "empty" && (squares[altLeftMove].props.className === "circleRed" || squares[altLeftMove].props.className === "redKing")) || (altRightMove > 0 && squares[altRightMove - 7].props.className === "empty" && (squares[altRightMove].props.className === "circleRed" || squares[altRightMove].props.className === "redKing"))){
+        else if((altLeftMove - 9 > 0 && squares[altLeftMove - 9].props.className === "empty" && (squares[altLeftMove].props.className === "circleRed" || squares[altLeftMove].props.className === "redKing")) || (altRightMove - 7 > 0 && squares[altRightMove - 7].props.className === "empty" && (squares[altRightMove].props.className === "circleRed" || squares[altRightMove].props.className === "redKing"))){
           return true;
         }
         else{
@@ -418,10 +418,10 @@ import checkerArray from './array.js';
         if((leftMove < 64 && leftMove === i) || (rightMove < 64 && rightMove === i) || (altRightMove > 0 && altRightMove === i) || (altLeftMove > 0 && altLeftMove === i)){
           return true;
         }
-        else if((leftMove < 64 && squares[leftMove + 7].props.className === "empty" && (squares[leftMove].props.className === "circle" || squares[leftMove].props.className === "blackKing")) || (rightMove < 64 && squares[rightMove + 9].props.className === "empty" && (squares[rightMove].props.className === "circle" || squares[rightMove].props.className === "blackKing"))){
+        else if((leftMove + 7 < 64 && squares[leftMove + 7].props.className === "empty" && (squares[leftMove].props.className === "circle" || squares[leftMove].props.className === "blackKing")) || (rightMove + 9 < 64 && squares[rightMove + 9].props.className === "empty" && (squares[rightMove].props.className === "circle" || squares[rightMove].props.className === "blackKing"))){
           return true;
         }
-        else if((altLeftMove > 0 && squares[altLeftMove - 9].props.className === "empty" && (squares[altLeftMove].props.className === "circle" || squares[altLeftMove].props.className === "blackKing")) || (altRightMove > 0 && squares[altRightMove - 7].props.className === "empty" && (squares[altRightMove].props.className === "circle" || squares[altRightMove].props.className === "blackKing"))){
+        else if((altLeftMove - 9 > 0 && squares[altLeftMove - 9].props.className === "empty" && (squares[altLeftMove].props.className === "circle" || squares[altLeftMove].props.className === "blackKing")) || (altRightMove - 7> 0 && squares[altRightMove - 7].props.className === "empty" && (squares[altRightMove].props.className === "circle" || squares[altRightMove].props.className === "blackKing"))){
           return true;
         }
         else{
